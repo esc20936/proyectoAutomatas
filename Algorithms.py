@@ -118,6 +118,7 @@ class State:
        
 # simbolo de epsilon = &
 # Algoritmo de Thompson para convertir una expresion regular a un NFA
+# Apoyo https://medium.com/swlh/visualizing-thompsons-construction-algorithm-for-nfas-step-by-step-f92ef378581b
 def Thompson(Regex):
     NFAstack = []
     for char in Regex:
