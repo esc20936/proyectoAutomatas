@@ -7,7 +7,7 @@
 # - Pablo Escobar 20936
 # - Jorge Caballeros 20009
 
-from Algorithms import EpsilonNFAtoNFA, Thompson
+from Algorithms import Thompson, subsetConstruction
 
 
 
@@ -92,15 +92,26 @@ if __name__ == "__main__":
     # cadena = input("Ingrese la cadena a evaluar: ")
 
     # Expresion prueba
-    expresion = "0*1*"
+    expresion = "(a|b)*abb"
+    # expresion = "a"
 
     if validarExpresionRegular(expresion):
         expresion = createFixedRegex(expresion)
         expresion = parseRegexToPostfix(expresion)
-        print(expresion)
+        # print(expresion)
         nfa = Thompson(expresion)
-        nfa = EpsilonNFAtoNFA(nfa,expresion)
-    
+        nfa.setNameToAllStates()
+        print("Tabla de transiciones NFA\n")
+        nfa.show()
+        # print("\n")
+        print("\n")
+        print("Tabla de transiciones DFA\n")
+        print(subsetConstruction(nfa,expresion))
+        
+        # # Print NFA dictionary in a readable format
+        # for key, value in nfa.items():
+        #     print(key, value)
+
         
 
 
