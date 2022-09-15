@@ -1,4 +1,7 @@
-# Thompson algorithm for building a NFA from a regular expression in postfix notation
+# Clase que nos ayudara a crear un NFA
+# Atributos:
+#   start - Estado inicial
+#   end - Estado final
 class NFA:
     def __init__(self, start, end):
         self.start = start
@@ -6,7 +9,13 @@ class NFA:
 
     def show(self):
         self.start.show()
-    
+
+    def getAllStates(self):
+        return list(self.start.getAllStates())
+
+# Clase que nos ayudara a representar un estado
+# Atributos:
+#   transitions - Diccionario que contiene las transiciones del estado
 class State:
     def __init__(self, transitions=None):
         self.transitions = transitions if transitions else {}
@@ -17,10 +26,8 @@ class State:
         else:
             self.transitions[symbol] = [state]
 
-    # print evertything reachable from this state
     def show(self, visited=None):
         if visited is None:
-
             visited = set()
         if self in visited:
             return
@@ -30,24 +37,35 @@ class State:
             for state in self.transitions[key]:
                 state.show(visited)
 
-                
+    def getAllStates(self, visited=None):
+        if visited is None:
+            visited = set()
+        if self in visited:
+            return
+        visited.add(self)
+        for key in self.transitions:
+            for state in self.transitions[key]:
+                state.getAllStates(visited)
+        return visited
+    
+       
 # simbolo de epsilon = &
+# Algoritmo de Thompson para convertir una expresion regular a un NFA
 def Thompson(Regex):
     NFAstack = []
     for char in Regex:
+
         if char == '|':
             nfa2 = NFAstack.pop()
             nfa1 = NFAstack.pop()
             start = State()
             end = State()
-
             start.addTransition('&', nfa1.start)
             start.addTransition('&', nfa2.start)
-
             nfa1.end.addTransition('&', end)
             nfa2.end.addTransition('&', end)
-
             NFAstack.append(NFA(start, end))
+
         elif char == '?':
             nfa2 = NFAstack.pop()
             nfa1 = NFAstack.pop()
@@ -58,27 +76,20 @@ def Thompson(Regex):
             nfa = NFAstack.pop()
             start = State()
             end = State()
-
             start.addTransition('&', nfa.start)
             start.addTransition('&', end)
-
             nfa.end.addTransition('&', nfa.start)
             nfa.end.addTransition('&', end)
-
             NFAstack.append(NFA(start, end))
 
         elif char == '+':
             nfa = NFAstack.pop()
             start = State()
             end = State()
-
             start.addTransition('&', nfa.start)
-
             nfa.end.addTransition('&', nfa.start)
             nfa.end.addTransition('&', end)
-
             NFAstack.append(NFA(start, end))
-
 
         else:
             end = State()
@@ -87,95 +98,30 @@ def Thompson(Regex):
             
     return NFAstack.pop()
 
-# def Thompson(Regex):
-#     nfaStack = []
-#     for c in Regex:
-#         if c == '?':
-#             # Concatenation
-#             nfa2 = nfaStack.pop()
-#             nfa1 = nfaStack.pop()
-#             nfa1.end.edges.append(nfa2.start)
-#             # nfa1Edges = nfa1.end.edges
-#             # nfa2Edges = nfa2.start.edges
-#             # temp = State(edges=nfa1Edges + nfa2Edges)
-#             # nfa1.start.edges = [temp]
-#             # nfa1.end = temp
-#             # nfa2.start = temp
+# Function to convert Epislon NFA to NFA
+def EpsilonNFAtoNFA(NFA,expression):
+    # Get all states
+    states = NFA.getAllStates()
+    # Get all symbols
+    def getSymbols(expression):
+        symbols = []
+        for char in expression:
+            if char not in symbols and char not in ['|', '*', '?', '+', '(', ')']:
+                symbols.append(char)
+        return symbols
 
-#             # nfa1.end.label = nfa2.start.label
-#             nfaStack.append(NFA(nfa1.start, nfa2.end))
-#         elif c == '|':
-#             # Alternation
-#             nfa2 = nfaStack.pop()
-#             nfa1 = nfaStack.pop()
-#             start = State(edges=[nfa1.start, nfa2.start])
-#             end = State()
-#             nfa1.end.edges.append(end)
-#             nfa2.end.edges.append(end)
-#             nfaStack.append(NFA(start, end))
-#         elif c == '*':
-#             # Kleene star
-#             nfa = nfaStack.pop()
-#             start = State(edges=[nfa.start])
-#             end = State()
-#             nfa.end.edges += [nfa.start, end]
-#             nfaStack.append(NFA(start, end))
-#         else:
-#             # Literal
-#             end = State()
-#             start = State(c, [end])
-#             nfaStack.append(NFA(start, end))
+    symbols = getSymbols(expression)
     
-#     return nfaStack.pop()
+    # TODO: Crear NFA de Epsilon-NFA
 
-# # parse Thomspon's NFA to DFA
-# def parseNFAtoDFA(nfa):
-#     # get all states from NFA
-#     states = []
-#     def getStates(state):
-#         if state not in states:
-#             states.append(state)
-#             for edge in state.edges:
-#                 getStates(edge)
-#     getStates(nfa.start)
-#     # get all symbols from NFA
-#     symbols = []
-#     for state in states:
-#         if state.label not in symbols:
-#             symbols.append(state.label)
+    # TODO: Crear DFA de NFA
 
-#     print("States: ", states)
-#     print("Symbols: ", symbols)
 
-#     namesOfStates = {}
-#     count = 0
-#     for state in states:
-#         name = "q" + str(count)
-#         namesOfStates[state] = name
-#         count += 1
 
-#     # create DFA
-#     dfa = {}
-#     def getDFA(state, symbol):
-#         if state.label == symbol and len(state.edges) > 0:
-#             print(len(state.edges))
-#             return namesOfStates[state.edges[0]]
-#         else:
-#             return None
-    
-    
-#     for state in states:
-#         dfa[namesOfStates[state]] = {}
-#         for symbol in symbols:
-#             dfa[namesOfStates[state]][symbol] = getDFA(state, symbol)
-#         count += 1
+
+            
+               
+
+
         
-#     # print(namesOfStates)
-#     return dfa
-    
-
-# # function to remove None transitions from DFA
-# def removeNoneTransitions(dfa):
-    
-    
 

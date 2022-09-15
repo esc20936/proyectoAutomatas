@@ -7,7 +7,7 @@
 # - Pablo Escobar 20936
 # - Jorge Caballeros 20009
 
-from Algorithms import Thompson
+from Algorithms import EpsilonNFAtoNFA, Thompson
 
 
 
@@ -90,24 +90,17 @@ def createFixedRegex(regex):
 if __name__ == "__main__":
     # expresion = input("Ingrese la expresion regular: ")
     # cadena = input("Ingrese la cadena a evaluar: ")
-    # expresion = "b+a*"
 
     # Expresion prueba
-    expresion = "a(a|b)*b"
-    # expresion = "abc(a+b)*c(a|b)*"
-    # expresion = "ab*c"
-
+    expresion = "0*1*"
 
     if validarExpresionRegular(expresion):
         expresion = createFixedRegex(expresion)
-        # print(expresion)
         expresion = parseRegexToPostfix(expresion)
         print(expresion)
         nfa = Thompson(expresion)
-        nfa.show()
-        # print(parseNFAtoDFA(nfa))
-        # print()
-
+        nfa = EpsilonNFAtoNFA(nfa,expresion)
+    
         
 
 
