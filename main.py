@@ -7,7 +7,7 @@
 # - Pablo Escobar 20936
 # - Jorge Caballeros 20009
 
-from Algorithms import Thompson
+from Algorithms import Thompson, parseNFAtoDFA
 
 
 
@@ -90,18 +90,23 @@ def createFixedRegex(regex):
 if __name__ == "__main__":
     # expresion = input("Ingrese la expresion regular: ")
     # cadena = input("Ingrese la cadena a evaluar: ")
-    expresion = "a*b"
+    expresion = "ab"
 
     # Expresion prueba
-    # expresion = "a(a+b)*b"
+    # expresion = "a(a|b)*b"
     # expresion = "abc(a+b)*c(a|b)*"
     # expresion = "ab*c"
 
 
     if validarExpresionRegular(expresion):
         expresion = createFixedRegex(expresion)
+        # print(expresion)
         expresion = parseRegexToPostfix(expresion)
-        Thompson(expresion)
+        # print(expresion)
+        nfa = Thompson(expresion)
+        # print(parseNFAtoDFA(nfa))
+        # print()
+
         
 
 
