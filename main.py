@@ -11,7 +11,6 @@ from Algorithms import Thompson, subsetConstruction
 from directito import DFA
 from utils import SyntaxTree
 
-from Algorithms import Thompson, subsetConstruction
 
 
 
@@ -97,12 +96,13 @@ if __name__ == "__main__":
     # cadena = input("Ingrese la cadena a evaluar: ")
 
     # Expresion prueba
-    expresion = "(a|b)*abb"
-    REGEX = '(a|b)*abb'
+    expresion = "(a|b)*abbc"
+    #REGEX = '(a|b)*abb'
     
     # expresion = "a"   
     
-    # operators and precedence
+    #   OPERADORES
+    
     OPERATORS = {
         '|': 1,
         '^': 2,
@@ -110,15 +110,8 @@ if __name__ == "__main__":
         '?': 2,
         '+': 1
     }
-    # epsilon char
     EPSILON = '&'
-
-    # string to evaluate
-    STRING = 'aabbbbbaabaaaaaaaabb'
-
-  
     
-   
 
     ## Syntax tree construction
     # generate tree from regex
@@ -127,26 +120,18 @@ if __name__ == "__main__":
 
 
 
-    ## Regex to DFA using direct method
-    # tree for direct build
+    # Se implemento metodo directo
+    # link: https://www.geeksforgeeks.org/regular-expression-to-dfa/
     hash_tree = SyntaxTree(OPERATORS, expresion + "#", direct=True)
 
-    # get nodes for computing nullable, firstpos, lastpos and followpos
+    # se consiguen los nodos
     print(hash_tree.traverse_postorder(hash_tree.root))
     nodes = hash_tree.traverse_postorder(hash_tree.root, full=True)
-
-    # instantiate dfa object
     direct_dfa = DFA(syntax_tree=hash_tree, direct=True, nodes=nodes)
-
-    # call direct method
     direct_dfa.direct()
-
-    # graph resulting DFA
     direct_dfa.graph_automata(mapping=direct_dfa.state_mapping)
+    
 
-    time, result = direct_dfa.simulate(STRING)
-
-    print("RESULTADO DE SIMULACION PARA DFA (Directo)\n-> %s\n-> %.3f (ms)\n" % (result, time))
 
     if validarExpresionRegular(expresion):
         expresion = createFixedRegex(expresion)
