@@ -8,6 +8,11 @@
 # - Jorge Caballeros 20009
 
 from Algorithms import Thompson, subsetConstruction
+from directito import DFA
+from utils import SyntaxTree
+
+from Algorithms import Thompson, subsetConstruction
+
 
 
 
@@ -93,7 +98,55 @@ if __name__ == "__main__":
 
     # Expresion prueba
     expresion = "(a|b)*abb"
-    # expresion = "a"
+    REGEX = '(a|b)*abb'
+    
+    # expresion = "a"   
+    
+    # operators and precedence
+    OPERATORS = {
+        '|': 1,
+        '^': 2,
+        '*': 3,
+        '?': 2,
+        '+': 1
+    }
+    # epsilon char
+    EPSILON = '&'
+
+    # string to evaluate
+    STRING = 'aabbbbbaabaaaaaaaabb'
+
+  
+    
+   
+
+    ## Syntax tree construction
+    # generate tree from regex
+    tree = SyntaxTree(OPERATORS, expresion)
+
+
+
+
+    ## Regex to DFA using direct method
+    # tree for direct build
+    hash_tree = SyntaxTree(OPERATORS, expresion + "#", direct=True)
+
+    # get nodes for computing nullable, firstpos, lastpos and followpos
+    print(hash_tree.traverse_postorder(hash_tree.root))
+    nodes = hash_tree.traverse_postorder(hash_tree.root, full=True)
+
+    # instantiate dfa object
+    direct_dfa = DFA(syntax_tree=hash_tree, direct=True, nodes=nodes)
+
+    # call direct method
+    direct_dfa.direct()
+
+    # graph resulting DFA
+    direct_dfa.graph_automata(mapping=direct_dfa.state_mapping)
+
+    time, result = direct_dfa.simulate(STRING)
+
+    print("RESULTADO DE SIMULACION PARA DFA (Directo)\n-> %s\n-> %.3f (ms)\n" % (result, time))
 
     if validarExpresionRegular(expresion):
         expresion = createFixedRegex(expresion)
@@ -111,6 +164,14 @@ if __name__ == "__main__":
         # # Print NFA dictionary in a readable format
         # for key, value in nfa.items():
         #     print(key, value)
+        
+ 
+
+
+        
+     
+        
+
 
         
 
