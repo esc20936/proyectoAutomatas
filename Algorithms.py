@@ -28,6 +28,7 @@ class NFA:
     
 
 
+
 # Clase que nos ayudara a representar un estado
 # Atributos:
 #   transitions - Diccionario que contiene las transiciones del estado

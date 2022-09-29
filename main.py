@@ -8,6 +8,10 @@
 # - Jorge Caballeros 20009
 
 from Algorithms import Thompson, subsetConstruction
+from directito import DFA
+from utils import SyntaxTree
+
+
 
 
 
@@ -92,8 +96,42 @@ if __name__ == "__main__":
     # cadena = input("Ingrese la cadena a evaluar: ")
 
     # Expresion prueba
-    expresion = "(a|b)*abb"
-    # expresion = "a"
+    expresion = "(a|b)*abbc"
+    #REGEX = '(a|b)*abb'
+    
+    # expresion = "a"   
+    
+    #   OPERADORES
+    
+    OPERATORS = {
+        '|': 1,
+        '^': 2,
+        '*': 3,
+        '?': 2,
+        '+': 1
+    }
+    EPSILON = '&'
+    
+
+    ## Syntax tree construction
+    # generate tree from regex
+    tree = SyntaxTree(OPERATORS, expresion)
+
+
+
+
+    # Se implemento metodo directo
+    # link: https://www.geeksforgeeks.org/regular-expression-to-dfa/
+    hash_tree = SyntaxTree(OPERATORS, expresion + "#", direct=True)
+
+    # se consiguen los nodos
+    print(hash_tree.traverse_postorder(hash_tree.root))
+    nodes = hash_tree.traverse_postorder(hash_tree.root, full=True)
+    direct_dfa = DFA(syntax_tree=hash_tree, direct=True, nodes=nodes)
+    direct_dfa.direct()
+    direct_dfa.graph_automata(mapping=direct_dfa.state_mapping)
+    
+
 
     if validarExpresionRegular(expresion):
         expresion = createFixedRegex(expresion)
@@ -111,6 +149,14 @@ if __name__ == "__main__":
         # # Print NFA dictionary in a readable format
         # for key, value in nfa.items():
         #     print(key, value)
+        
+ 
+
+
+        
+     
+        
+
 
         
 
