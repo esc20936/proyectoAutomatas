@@ -1,14 +1,19 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Sep 28 17:36:42 2022
 
-@author: alegu
+"""
+llorar en automata 
+
+Clase de algoritmo directo
+
+Clase de teoría de la compu
+
+videos de apoyo: 
+    https://www.youtube.com/watch?v=I57LsyTdop8
+    https://www.youtube.com/watch?v=G8i_2CUHP_Y&t=1082s
 """
 
 import os
 from timeit import default_timer as timer
 from datetime import timedelta
-
 import uuid
 import shortuuid
 import graphviz, tempfile
@@ -31,28 +36,31 @@ class FA(object):
         self.initial_state = istate
         self.terminal_states = tstate
         
+    def setNombre(self, name):
+        self.name = name
+        
     
     def print_automata(self, type, i_state, t_state, states, symbols, t_function, state_mapping=None):
-        print(Colors.OKBLUE  + Colors.ENDC + " NEW " + Colors.UNDERLINE + type + Colors.ENDC + " AUTOMATA CREATED WITH")
-        print(Colors.OKCYAN + " INITIAL STATE" + Colors.ENDC)
-        print(" °", i_state)
-        print(Colors.OKCYAN + " TERMINAL STATES" + Colors.ENDC)
-        print(" °", t_state)
-        print(Colors.OKCYAN + " STATES" + Colors.ENDC)
-        print(" °")
+        print(Colors.OKBLUE  + Colors.ENDC  + Colors.UNDERLINE + type + Colors.ENDC + " AUTOMATA")
+        print(Colors.OKCYAN + " Estado inicial " + Colors.ENDC)
+        print(" :)", i_state)
+        print(Colors.OKCYAN + " Estado terminal" + Colors.ENDC)
+        print(" :)", t_state)
+        print(Colors.OKCYAN + " Estados " + Colors.ENDC)
+        print(" :)")
         for state in states:
             print("     ", state)
-        print(Colors.OKCYAN + " SYMBOLS" + Colors.ENDC)
-        print(" °", symbols)
+        print(Colors.OKCYAN + " Simbolos" + Colors.ENDC)
+        print(" :)", symbols)
         if state_mapping:
-            print(Colors.OKCYAN + " STATE MAPPING" + Colors.ENDC)
-            print(" °")
+            print(Colors.OKCYAN + " Mapa de estados" + Colors.ENDC)
+            print(" :)")
             for key, value in state_mapping.items():
-                print("     ", key, "->", value)
-        print(Colors.OKCYAN + " TRANSITIONS" + Colors.ENDC)
+                print("     ", key, "***", value)
+        print(Colors.OKCYAN + " Transiciones" + Colors.ENDC)
         print(" °")
         for key, value in t_function.items():
-            print("     ", key, "->", value)
+            print("     ", key, "***", value)
         print("")
         
         
@@ -93,9 +101,9 @@ class DFA(FA):
         self.nodes = nodes
         self.state_mapping = None
         
-        # remove 'ε' from symbols (affects construction)
-        nfa and 'ε' in nfa.symbols and nfa.symbols.remove('ε')
-        syntax_tree and 'ε' in syntax_tree.symbols and syntax_tree.symbols.remove('ε')
+        # Elimina la epsilon de los simbolos debido a que afecta la construccion remove 
+        nfa and '&' in nfa.symbols and nfa.symbols.remove('&')
+        syntax_tree and '&' in syntax_tree.symbols and syntax_tree.symbols.remove('&')
         
         # instanciamos al objeto 
         FA.__init__(
@@ -127,6 +135,7 @@ class DFA(FA):
     
     def direct(self):
         self.follow_pos()
+
         
         print(self.followpos)
         
@@ -179,7 +188,7 @@ class DFA(FA):
         self.transition_function = t_func
         self.state_mapping = subset_mapping
         
-        self.print_automata("DIRECT DFA", self.initial_state, self.terminal_states, self.states, self.symbols, self.transition_function, state_mapping=subset_mapping)
+        self.print_automata("Dfa directo", self.initial_state, self.terminal_states, self.states, self.symbols, self.transition_function, state_mapping=subset_mapping)
     
     
     def subset(self):
@@ -204,11 +213,12 @@ class DFA(FA):
                         subset_mapping[tuple(T)]
                     except:
                         subset_mapping[tuple(T)] = shortuuid.encode(uuid.uuid4())[:4]
-                        
+                                              
                     try:
                         subset_mapping[tuple(U)]
                     except:
                         subset_mapping[tuple(U)] = shortuuid.encode(uuid.uuid4())[:4]
+                        
 
                     t_func[(subset_mapping[tuple(T)], symbol)] = subset_mapping[tuple(U)]
                     
@@ -236,7 +246,7 @@ class DFA(FA):
             state = stack.pop()
             
             for key in transition_function.keys():
-                if key[0] == state and key[1] == 'ε':
+                if key[0] == state and key[1] == '&':
                     for x in transition_function[key]:
                         if x not in closure:
                             closure.append(x)
@@ -259,7 +269,7 @@ class DFA(FA):
             top = stack.pop()
             
             for key, value in t_func.items():
-                if key[0] == top and key[1] == 'ε':
+                if key[0] == top and key[1] == '&':
                     for x in value:
                         if x not in closure:
                             closure.append(x)
@@ -287,7 +297,7 @@ class DFA(FA):
         
         for char in string:
             if char not in self.symbols:
-                print(Colors.FAIL + "[ERROR] " + Colors.ENDC + " Símbolo " + char + " no reconocido por el autómata")
+                print(Colors.FAIL  + Colors.ENDC + " Símbolo " + char + " no reconocido por el autómata")
                 terminal = None
                 break
                 exit()

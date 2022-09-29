@@ -1,12 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Sep 28 17:46:26 2022
 
-@author: alegu
-"""
 
 import copy
-
 import numpy as np
 from queue import LifoQueue
 
@@ -65,13 +59,13 @@ class SyntaxTree(object):
         
         
     def clean_postfix(self):
-        print(Colors.OKBLUE + "[INFO]" + Colors.ENDC + "Cleaning and refactoring postfix")
+        print(Colors.OKBLUE  + Colors.ENDC + "Cleaning and refactoring postfix")
         new_postfix = ""
         
         for char in self.postfix:
             if char == '?':
-                new_postfix += 'ε|'
-                self.symbols.append('ε')
+                new_postfix += '&|'
+                self.symbols.append('&')
             else:
                 new_postfix += char
         
@@ -95,7 +89,7 @@ class SyntaxTree(object):
                     self.postfix += operator_stack.pop()
                     
                     if operator_stack.is_empty():
-                        print(Colors.FAIL + "[ERROR] " + Colors.ENDC + "Error sintáctico, falta un paréntesis en la expresión")
+                        print(Colors.FAIL  + Colors.ENDC + "Error sintáctico, falta un paréntesis en la expresión")
                         exit()
                     
                     
@@ -118,13 +112,12 @@ class SyntaxTree(object):
         while not operator_stack.is_empty():
             self.postfix += operator_stack.pop()
             
-        print(Colors.OKBLUE + "[INFO] " + Colors.ENDC + "Postfix obttenido " + self.postfix)
+        print(Colors.OKBLUE  + Colors.ENDC + "Postfix: " + self.postfix)
                     
     
     def build_tree(self):
         tree_stack = Stack()
         
-        print(Colors.OKBLUE + "[INFO] " + Colors.ENDC + "Building tree")
         for char in self.postfix:
             if char in self.symbols:
                 tree_stack.push(Node(char))
@@ -153,7 +146,7 @@ class SyntaxTree(object):
                         
                             tree_stack.push(new)
                     else:
-                        print(Colors.FAIL + "[ERROR] " + Colors.ENDC + "Operación " + char + " incompleta, insuficientes parámetros")
+                        print(Colors.FAIL  + Colors.ENDC + "No se puede ejecutar " + char)
                         exit()
                 else:
                     if tree_stack.get_size() > 1:
@@ -167,7 +160,7 @@ class SyntaxTree(object):
                     
                         tree_stack.push(new)
                     else:
-                        print(Colors.FAIL + "[ERROR] " + Colors.ENDC + "Operación CONCAT u OR incompleta, falta un símbolo")
+                        print(Colors.FAIL  + Colors.ENDC + "Operación concatenada no es ejecutable, falta un símbolo")
                       #  exit()
         
         self.root = tree_stack.pop()
@@ -206,7 +199,7 @@ class SyntaxTree(object):
             self.pos += 1
             
             # define nullable
-            if node.data == 'ε':
+            if node.data == '&':
                 node.nullable = True
             else:
                 node.nullable = False
@@ -256,17 +249,16 @@ class SyntaxTree(object):
 
 
 class Node(object):
-    """
-    CLASS NODE
+
     
-    Una clase nodo, almacena información de un nodo en un árbol binario.
+    #Una clase nodo, almacena información de un nodo en un árbol binario.
     
-    Params:
-        -> parent (Node): nodo padre (si no tiene es un nodo raíz)
-        -> left (Node): nodo hijo del lado izquierdo
-        -> right (Node): nodo hijo del lado derecho
-        -> data (string): símbolo u operador que el nodo almacena
-    """
+   # Params:
+    # parent (Node): nodo padre (si no tiene es un nodo raíz)
+    # left (Node): nodo hijo del lado izquierdo
+    # right (Node): nodo hijo del lado derecho
+    # data (string): símbolo u operador que el nodo almacena
+
     def __init__(self, data, parent=None, left=None, right=None):
         self.data = data
         self.left = left
@@ -283,15 +275,7 @@ class Node(object):
 
 
 class Stack(object):
-    """
-    CLASS STACK
-    
-    Esta clase construye un stack utilizando la librería collections y LifoQueue
-    e implementa las funcionalidades básicas de un stack (push, pop, get_size, is_empty)
-    
-    Params:
-        None
-    """
+   
     def __init__(self):
         self.stack = LifoQueue()
        
@@ -324,6 +308,7 @@ class Stack(object):
     
     def is_empty(self):
         return self.stack.empty()
+
 
 
 
